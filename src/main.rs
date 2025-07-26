@@ -1,11 +1,10 @@
 use std::env;
-use std::io;
-use std::io::Read;
 use std::path::Path;
 use std::process::Command;
 
-use eframe::{egui};
+use eframe::egui;
 use egui::Frame;
+use egui_extras::install_image_loaders;
 
 #[derive(Default)]
 struct MyApp {
@@ -13,13 +12,13 @@ struct MyApp {
 }
 
 impl MyApp {
-    fn new(cc: &eframe::CreationContext<'_>, toUrl: String) -> Self {
+    fn new(_cc: &eframe::CreationContext<'_>, url: String) -> Self {
         // Customize egui here with cc.egui_ctx.set_fonts and cc.egui_ctx.set_visuals.
         // Restore app state using cc.storage (requires the "persistence" feature).
         // Use the cc.gl (a glow::Context) to create graphics shaders and buffers that you can use
         // for e.g. egui::PaintCallback.
         MyApp {
-            url: toUrl
+            url
         }
     }
 }
@@ -28,7 +27,7 @@ impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.set_visuals(egui::Visuals::light());
 
-        egui::CentralPanel::default().frame(Frame::none()).show(ctx, |ui| {
+        egui::CentralPanel::default().frame(Frame::NONE).show(ctx, |ui| {
             // Expand to the full screen
             let available = ui.available_size();
 
@@ -39,30 +38,12 @@ impl eframe::App for MyApp {
                     ui.horizontal(|ui| {
                         ui.columns(2, |cols| {
                             cols[0].vertical_centered_justified(|ui| {
-                                let firefox_style = egui::Button::new(
-                                    egui::RichText::new("🦊 Firefox")
-                                        .heading()
-                                        .strong()
-                                        .size(28.0)
-                                        .color(egui::Color32::WHITE),
-                                ).fill(egui::Color32::from_rgb(255, 69, 0)) // Firefox orange
-                                    .min_size(egui::vec2(250.0, 80.0));
-
-                                if ui.add(firefox_style).clicked() {
+                                if ui.image(egui::include_image!("firefox.svg")).clicked() {
                                     Command::new("C:\\Program Files\\Mozilla Firefox\\firefox.exe").arg(self.url.clone()).spawn().expect("Firefox failed to start");
                                 }
                             });
                             cols[1].vertical_centered_justified(|ui| {
-                                let chrome_style = egui::Button::new(
-                                    egui::RichText::new("🌐 Chrome")
-                                        .heading()
-                                        .strong()
-                                        .size(28.0)
-                                        .color(egui::Color32::WHITE),
-                                ).fill(egui::Color32::from_rgb(66, 133, 244)) // Google blue
-                                    .min_size(egui::vec2(250.0, 80.0));
-
-                                if ui.add(chrome_style).clicked() {
+                                if(ui.image(egui::include_image!("chrome.svg"))).clicked() {
                                     match get_chrome_path() {
                                         Some(chrome_path) => {
                                             Command::new(chrome_path)
@@ -107,7 +88,10 @@ fn main() {
     _ = eframe::run_native(
         "Browser Launcher",
         options,
-        Box::new(|cc| Ok(Box::new(MyApp::new(cc, input.to_owned()))))
+        Box::new(|cc| {
+            install_image_loaders(&cc.egui_ctx);
+            Ok(Box::new(MyApp::new(cc, input.to_owned())))
+        })
     )
 }
 
