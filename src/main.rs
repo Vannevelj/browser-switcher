@@ -2,7 +2,8 @@ use std::env;
 use std::path::Path;
 use std::process::Command;
 
-use eframe::egui;
+use eframe::{egui, App};
+use eframe::egui::{ImageSource, Ui};
 use egui::Frame;
 use egui_extras::install_image_loaders;
 
@@ -19,6 +20,21 @@ impl MyApp {
         // for e.g. egui::PaintCallback.
         MyApp {
             url
+        }
+    }
+
+    fn add_browser(&mut self, ui: &mut Ui, icon: ImageSource, paths: Vec<&str>)  {
+        let browser = egui::ImageButton::new(icon);
+        if ui.add(browser).clicked() {
+            match get_path(paths) {
+                Some(path) => {
+                    Command::new(path)
+                        .arg(self.url.clone())
+                        .spawn()
+                        .expect("Browser failed to start");
+                }
+                None => eprintln!("Browser not found on this system."),
+            }
         }
     }
 }
@@ -38,24 +54,13 @@ impl eframe::App for MyApp {
                     ui.horizontal(|ui| {
                         ui.columns(2, |cols| {
                             cols[0].vertical_centered_justified(|ui| {
-                                let firefox = egui::ImageButton::new(egui::include_image!("firefox.svg"));
-                                if ui.add(firefox).clicked() {
-                                    Command::new("C:\\Program Files\\Mozilla Firefox\\firefox.exe").arg(self.url.clone()).spawn().expect("Firefox failed to start");
-                                }
+                                self.add_browser(ui, egui::include_image!("firefox.svg"), vec!["C:\\Program Files\\Mozilla Firefox\\firefox.exe"]);
                             });
                             cols[1].vertical_centered_justified(|ui| {
-                                let chrome = egui::ImageButton::new(egui::include_image!("chrome.svg"));
-                                if ui.add(chrome).clicked() {
-                                    match get_chrome_path() {
-                                        Some(chrome_path) => {
-                                            Command::new(chrome_path)
-                                                .arg(self.url.clone())
-                                                .spawn()
-                                                .expect("Chrome failed to start");
-                                        }
-                                        None => eprintln!("Chrome not found on this system."),
-                                    }
-                                }
+                                self.add_browser(ui, egui::include_image!("chrome.svg"), vec![
+                                    "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+                                    "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
+                                ]);
                             });
                         });
                     })
@@ -64,7 +69,6 @@ impl eframe::App for MyApp {
         });
     }
 }
-
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -97,15 +101,10 @@ fn main() {
     )
 }
 
-fn get_chrome_path() -> Option<&'static str> {
-    let paths = [
-        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
-        "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe",
-    ];
-
+fn get_path(paths: Vec<&str>) -> Option<String> {
     for path in paths {
         if Path::new(path).exists() {
-            return Some(path);
+            return Some(path.to_owned());
         }
     }
 
