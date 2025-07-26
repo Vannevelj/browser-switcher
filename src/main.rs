@@ -38,12 +38,14 @@ impl eframe::App for MyApp {
                     ui.horizontal(|ui| {
                         ui.columns(2, |cols| {
                             cols[0].vertical_centered_justified(|ui| {
-                                if ui.image(egui::include_image!("firefox.svg")).clicked() {
+                                let firefox = egui::ImageButton::new(egui::include_image!("firefox.svg"));
+                                if ui.add(firefox).clicked() {
                                     Command::new("C:\\Program Files\\Mozilla Firefox\\firefox.exe").arg(self.url.clone()).spawn().expect("Firefox failed to start");
                                 }
                             });
                             cols[1].vertical_centered_justified(|ui| {
-                                if(ui.image(egui::include_image!("chrome.svg"))).clicked() {
+                                let chrome = egui::ImageButton::new(egui::include_image!("chrome.svg"));
+                                if ui.add(chrome).clicked() {
                                     match get_chrome_path() {
                                         Some(chrome_path) => {
                                             Command::new(chrome_path)
