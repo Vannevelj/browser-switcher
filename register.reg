@@ -1,0 +1,41 @@
+Windows Registry Editor Version 5.00
+
+; Register app under StartMenuInternet
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\BrowserSwitcher]
+@="Browser Switcher"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\BrowserSwitcher\Capabilities]
+"ApplicationDescription"="My simple Rust browser"
+"ApplicationName"="Browser Switcher"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\BrowserSwitcher\Capabilities\FileAssociations]
+".htm"="BrowserSwitcherHTML"
+".html"="BrowserSwitcherHTML"
+".shtml"="BrowserSwitcherHTML"
+".xht"="BrowserSwitcherHTML"
+".xhtml"="BrowserSwitcherHTML"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\BrowserSwitcher\Capabilities\URLAssociations]
+"http"="BrowserSwitcherURL"
+"https"="BrowserSwitcherURL"
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\BrowserSwitcher\shell\open\command]
+@="\"D:\\source\\browser-switcher\\target\\debug\\browser-switcher.exe\" \"%1\""
+
+; Register with Windows as an application
+[HKEY_LOCAL_MACHINE\SOFTWARE\RegisteredApplications]
+"BrowserSwitcher"="Software\\Clients\\StartMenuInternet\\BrowserSwitcher\\Capabilities"
+
+; Declare protocol handlers
+[HKEY_CLASSES_ROOT\BrowserSwitcherURL]
+@="BrowserSwitcher URL"
+"URL Protocol"=""
+
+[HKEY_CLASSES_ROOT\BrowserSwitcherURL\shell\open\command]
+@="\"D:\\source\\browser-switcher\\target\\debug\\browser-switcher.exe\" \"%1\""
+
+[HKEY_CLASSES_ROOT\BrowserSwitcherHTML]
+@="BrowserSwitcher HTML File"
+
+[HKEY_CLASSES_ROOT\BrowserSwitcherHTML\shell\open\command]
+@="\"D:\\source\\browser-switcher\\target\\debug\\browser-switcher.exe\" \"%1\""
