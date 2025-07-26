@@ -2,8 +2,8 @@ use std::env;
 use std::path::Path;
 use std::process::Command;
 
-use eframe::{egui, App};
 use eframe::egui::{ImageSource, Ui};
+use eframe::egui;
 use egui::Frame;
 use egui_extras::install_image_loaders;
 
@@ -24,8 +24,8 @@ impl MyApp {
     }
 
     fn add_browser(&mut self, ui: &mut Ui, icon: ImageSource, paths: Vec<&str>)  {
-        let browser = egui::ImageButton::new(icon);
-        if ui.add(browser).clicked() {
+        let browser = egui::ImageButton::new(icon).frame(false);
+        if ui.add_sized([400f32, 400f32], browser).clicked() {
             match get_path(paths) {
                 Some(path) => {
                     Command::new(path)
@@ -43,7 +43,7 @@ impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.set_visuals(egui::Visuals::light());
 
-        egui::CentralPanel::default().frame(Frame::NONE).show(ctx, |ui| {
+        egui::CentralPanel::default().frame(Frame::NONE.inner_margin(0)).show(ctx, |ui| {
             // Expand to the full screen
             let available = ui.available_size();
 
@@ -87,7 +87,7 @@ fn main() {
             .with_maximized(false)
             .with_decorations(true)
             .with_transparent(true)
-            .with_inner_size([800.0, 600.0]),
+            .with_inner_size([800.0, 400.0]),
         ..Default::default()
     };
 
