@@ -8,15 +8,19 @@ use eframe::{egui};
 use egui::Frame;
 
 #[derive(Default)]
-struct MyApp;
+struct MyApp {
+    url: String,
+}
 
 impl MyApp {
-    fn new(cc: &eframe::CreationContext<'_>) -> Self {
+    fn new(cc: &eframe::CreationContext<'_>, toUrl: String) -> Self {
         // Customize egui here with cc.egui_ctx.set_fonts and cc.egui_ctx.set_visuals.
         // Restore app state using cc.storage (requires the "persistence" feature).
         // Use the cc.gl (a glow::Context) to create graphics shaders and buffers that you can use
         // for e.g. egui::PaintCallback.
-        Self::default()
+        MyApp {
+            url: toUrl
+        }
     }
 }
 
@@ -45,7 +49,7 @@ impl eframe::App for MyApp {
                                     .min_size(egui::vec2(250.0, 80.0));
 
                                 if ui.add(firefox_style).clicked() {
-                                    let _ = Command::new("C:\\Program Files\\Mozilla Firefox\\firefox.exe").spawn();
+                                    Command::new("C:\\Program Files\\Mozilla Firefox\\firefox.exe").arg(self.url.clone()).spawn().expect("Firefox failed to start");
                                 }
                             });
                             cols[1].vertical_centered_justified(|ui| {
@@ -59,7 +63,15 @@ impl eframe::App for MyApp {
                                     .min_size(egui::vec2(250.0, 80.0));
 
                                 if ui.add(chrome_style).clicked() {
-                                    let _ = Command::new("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe").spawn();
+                                    match get_chrome_path() {
+                                        Some(chrome_path) => {
+                                            Command::new(chrome_path)
+                                                .arg(self.url.clone())
+                                                .spawn()
+                                                .expect("Chrome failed to start");
+                                        }
+                                        None => eprintln!("Chrome not found on this system."),
+                                    }
                                 }
                             });
                         });
@@ -82,21 +94,6 @@ fn main() {
     let input = &args[1];
     println!("Received argument: {}", input);
 
-    // match get_chrome_path() {
-    //     Some(chrome_path) => {
-    //         let status = Command::new(chrome_path)
-    //             .arg(input)
-    //             .status();
-    //
-    //         match status {
-    //             Ok(status) if status.success() => println!("Chrome launched successfully!"),
-    //             Ok(status) => eprintln!("Chrome exited with status: {}", status),
-    //             Err(e) => eprintln!("Failed to launch Chrome: {}", e),
-    //         }
-    //     }
-    //     None => eprintln!("Chrome not found on this system."),
-    // }
-
     let options = eframe::NativeOptions {
         centered: true,
         viewport: egui::ViewportBuilder::default()
@@ -110,7 +107,7 @@ fn main() {
     _ = eframe::run_native(
         "Browser Launcher",
         options,
-        Box::new(|cc| Ok(Box::new(MyApp::new(cc))))
+        Box::new(|cc| Ok(Box::new(MyApp::new(cc, input.to_owned()))))
     )
 }
 
