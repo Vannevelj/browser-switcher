@@ -7,7 +7,7 @@ use eframe::egui;
 use eframe::egui::{ImageSource, Ui};
 use egui::Frame;
 use egui_extras::install_image_loaders;
-use url::{ParseError, Url};
+use url::Url;
 
 #[derive(Default)]
 struct MyApp {
