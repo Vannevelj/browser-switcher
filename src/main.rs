@@ -1,11 +1,13 @@
+#![windows_subsystem = "windows"]
 use std::env;
 use std::path::Path;
 use std::process::Command;
 
-use eframe::egui::{ImageSource, Ui};
 use eframe::egui;
+use eframe::egui::{ImageSource, Ui};
 use egui::Frame;
 use egui_extras::install_image_loaders;
+use url::{ParseError, Url};
 
 #[derive(Default)]
 struct MyApp {
@@ -25,7 +27,7 @@ impl MyApp {
 
     fn add_browser(&mut self, ui: &mut Ui, icon: ImageSource, paths: Vec<&str>)  {
         let browser = egui::ImageButton::new(icon).frame(false);
-        if ui.add_sized([400f32, 350f32], browser).clicked() {
+        if ui.add_sized([400.0, 350.0], browser).clicked() {
             match get_path(paths) {
                 Some(path) => {
                     Command::new(path)
@@ -44,10 +46,8 @@ impl eframe::App for MyApp {
         ctx.set_visuals(egui::Visuals::light());
 
         egui::CentralPanel::default().frame(Frame::NONE.inner_margin(30)).show(ctx, |ui| {
-            // Expand to the full screen
             let available = ui.available_size();
 
-            // Center the buttons
             ui.allocate_ui(
                 available,
                 |ui| {
@@ -67,7 +67,8 @@ impl eframe::App for MyApp {
                         });
                     });
                     ui.vertical_centered(|ui| {
-                        ui.label(egui::RichText::new(self.url.to_owned())
+                        let domain = Url::parse(self.url.as_str()).unwrap().host().unwrap().to_string();
+                        ui.label(egui::RichText::new(domain)
                             .heading()
                             .strong()
                             .size(28.0)
@@ -102,7 +103,7 @@ fn main() {
     };
 
     _ = eframe::run_native(
-        "Browser Launcher",
+        "Browser Switcher",
         options,
         Box::new(|cc| {
             install_image_loaders(&cc.egui_ctx);

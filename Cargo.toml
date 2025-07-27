@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 eframe = "0.32.0"
 egui_extras = { version = "0.32.0", features = ["all_loaders", "svg"] }
+url = "2.5.4"
