@@ -5,19 +5,19 @@ Windows Registry Editor Version 5.00
 @="Browser Switcher"
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\BrowserSwitcher\Capabilities]
-"ApplicationDescription"="My simple Rust browser"
+"ApplicationDescription"="Swap between Chrome and Firefox when opening a link"
 "ApplicationName"="Browser Switcher"
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\BrowserSwitcher\Capabilities\FileAssociations]
-".htm"="BrowserSwitcherHTML"
-".html"="BrowserSwitcherHTML"
-".shtml"="BrowserSwitcherHTML"
-".xht"="BrowserSwitcherHTML"
-".xhtml"="BrowserSwitcherHTML"
+".htm"="BrowserSwitcher"
+".html"="BrowserSwitcher"
+".shtml"="BrowserSwitcher"
+".xht"="BrowserSwitcher"
+".xhtml"="BrowserSwitcher"
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\BrowserSwitcher\Capabilities\URLAssociations]
-"http"="BrowserSwitcherURL"
-"https"="BrowserSwitcherURL"
+"http"="BrowserSwitcher"
+"https"="BrowserSwitcher"
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Clients\StartMenuInternet\BrowserSwitcher\shell\open\command]
 @="\"D:\\source\\browser-switcher\\target\\debug\\browser-switcher.exe\" \"%1\""
@@ -27,15 +27,9 @@ Windows Registry Editor Version 5.00
 "BrowserSwitcher"="Software\\Clients\\StartMenuInternet\\BrowserSwitcher\\Capabilities"
 
 ; Declare protocol handlers
-[HKEY_CLASSES_ROOT\BrowserSwitcherURL]
-@="BrowserSwitcher URL"
+[HKEY_CLASSES_ROOT\BrowserSwitcher]
+@="Browser Switcher"
 "URL Protocol"=""
 
-[HKEY_CLASSES_ROOT\BrowserSwitcherURL\shell\open\command]
-@="\"D:\\source\\browser-switcher\\target\\debug\\browser-switcher.exe\" \"%1\""
-
-[HKEY_CLASSES_ROOT\BrowserSwitcherHTML]
-@="BrowserSwitcher HTML File"
-
-[HKEY_CLASSES_ROOT\BrowserSwitcherHTML\shell\open\command]
+[HKEY_CLASSES_ROOT\BrowserSwitcher\shell\open\command]
 @="\"D:\\source\\browser-switcher\\target\\debug\\browser-switcher.exe\" \"%1\""
