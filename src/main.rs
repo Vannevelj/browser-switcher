@@ -88,6 +88,10 @@ fn main() {
 
     let input = &args[1];
     println!("Received argument: {}", input);
+    
+    if input.starts_with("https://www.bing.com/search") {
+        std::process::exit(0);
+    }
 
     let options = eframe::NativeOptions {
         centered: true,
