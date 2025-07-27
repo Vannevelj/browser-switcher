@@ -34,6 +34,7 @@ impl MyApp {
                         .arg(self.url.clone())
                         .spawn()
                         .expect("Browser failed to start");
+                    std::process::exit(0);
                 }
                 None => eprintln!("Browser not found on this system."),
             }
