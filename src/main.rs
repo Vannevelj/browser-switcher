@@ -25,7 +25,7 @@ impl MyApp {
 
     fn add_browser(&mut self, ui: &mut Ui, icon: ImageSource, paths: Vec<&str>)  {
         let browser = egui::ImageButton::new(icon).frame(false);
-        if ui.add_sized([400f32, 400f32], browser).clicked() {
+        if ui.add_sized([400f32, 350f32], browser).clicked() {
             match get_path(paths) {
                 Some(path) => {
                     Command::new(path)
@@ -43,7 +43,7 @@ impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.set_visuals(egui::Visuals::light());
 
-        egui::CentralPanel::default().frame(Frame::NONE.inner_margin(0)).show(ctx, |ui| {
+        egui::CentralPanel::default().frame(Frame::NONE.inner_margin(30)).show(ctx, |ui| {
             // Expand to the full screen
             let available = ui.available_size();
 
@@ -55,7 +55,9 @@ impl eframe::App for MyApp {
                         ui.columns(2, |cols| {
                             cols[0].vertical_centered_justified(|ui| {
                                 self.add_browser(ui, egui::include_image!("firefox.svg"), vec!["C:\\Program Files\\Mozilla Firefox\\firefox.exe"]);
+                                ui.add_space(30.0);
                             });
+
                             cols[1].vertical_centered_justified(|ui| {
                                 self.add_browser(ui, egui::include_image!("chrome.svg"), vec![
                                     "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
@@ -63,6 +65,14 @@ impl eframe::App for MyApp {
                                 ]);
                             });
                         });
+                    });
+                    ui.vertical_centered(|ui| {
+                        ui.label(egui::RichText::new(self.url.to_owned())
+                            .heading()
+                            .strong()
+                            .size(28.0)
+                            .monospace()
+                            .color(egui::Color32::LIGHT_GRAY))
                     })
                 },
             );
@@ -85,9 +95,9 @@ fn main() {
         centered: true,
         viewport: egui::ViewportBuilder::default()
             .with_maximized(false)
-            .with_decorations(true)
+            .with_decorations(false)
             .with_transparent(true)
-            .with_inner_size([800.0, 400.0]),
+            .with_inner_size([820.0, 450.0]),
         ..Default::default()
     };
 
